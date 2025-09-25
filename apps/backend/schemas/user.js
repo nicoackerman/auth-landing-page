@@ -1,0 +1,34 @@
+import { z } from "zod";
+
+export const RoleEnum = z.enum(["client", "admin"]);
+
+export const UserSchema = z.object({
+  id: z.string().uuid(),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[A-Za-z0-9_]+$/, "Only letters, numbers, and underscore"),
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8)
+    .max(128)
+    .regex(
+      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/,
+      "Password must include lowercase, UPPERCASE, number, and symbol"
+    ),
+  role: RoleEnum.default("client"),
+  createdAt: z.coerce.date(),
+});
+
+export const SignUpSchema = UserSchema.pick({
+  username: true,
+  email: true,
+  password: true,
+});
+
+export const LogInSchema = UserSchema.pick({
+  email: true,
+  password: true,
+});
