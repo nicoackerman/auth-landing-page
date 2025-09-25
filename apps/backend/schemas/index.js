@@ -1,4 +1,5 @@
 export {
   UserSchema as UserSchema,
-  SignUpSchema as SafeUserSchema,
+  SignUpSchema,
+  LogInSchema
 } from "./user.js";
