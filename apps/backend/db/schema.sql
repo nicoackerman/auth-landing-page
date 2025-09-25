@@ -1,0 +1,24 @@
+CREATE TABLE Users (
+  id INT PRIMARY KEY NOT NULL,
+  username varchar(255) NOT NULL UNIQUE,
+  email varchar(255) NOT NULL UNIQUE,
+  password varchar(255) NOT NULL,
+  role_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (role_id) REFERENCES Roles(id);
+);
+
+CREATE TABlE Roles (
+  id INT PRIMARY KEY NOT NULL,
+  role varchar(255) NOT NULL UNIQUE,
+);
+
+CREATE TABLE Refresh_tokens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  token_hash VARCHAR(255) NOT NULL UNIQUE,
+  expires_at DATETIME NOT NULL,
+  revoked BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
