@@ -1,3 +1,4 @@
+import boom from "@hapi/boom";
 export class ValidatorMiddleware {
   static validateSchema(schema, property) {
     return function (req, res, next) {

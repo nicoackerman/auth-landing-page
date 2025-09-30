@@ -1,12 +1,12 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 
-const JWTSecret = process.envJWT_SECRET;
+const JWTSecret = process.env.JWT_SECRET;
 if (!JWTSecret) {
   throw Error("JWT secret was not given");
 }
 
-export class HashingService {
+export class JWTService {
   static async generateJWT(payload, expires = "1h") {
     const token = jwt.sign(payload, JWTSecret, {
       expiresIn: expires,

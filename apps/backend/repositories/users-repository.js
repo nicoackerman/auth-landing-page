@@ -22,23 +22,23 @@ class _UsersRepository {
     return data.length > 0;
   }
 
-  async isRoleIdValid(id) {
+  async isRoleIdInvalid(id) {
     const data = await RolesRepository.getById(id);
-    return data == null ? false : true;
+    console.log(data == null ? false : true);
+    return data == null ? true : false;
   }
 
   async create(username, email, hashedPassword, roleId) {
     if (await this.isEmailTaken(email)) throw Error("Email is taken");
     if (await this.isUsernameTaken(username)) throw Error("Username is taken");
-    if (await this.isRoleIdValid(roleId)) throw Error("Role id given is invalid");
+    if (await this.isRoleIdInvalid(roleId))
+      throw Error(`Role id: ${roleId} given is invalid`);
 
     const [data] = await this.connection.query(
-      "INSERT INTO Users (username, email, password_hash, role_id) VALUES (?, ?, ?, ?)",
+      "INSERT INTO Users (username, email, password, role_id) VALUES (?, ?, ?, ?)",
       [username, email, hashedPassword, roleId]
     );
-    return {
-      id: data.insertId,
-    };
+    return data.insertId;
   }
 }
 

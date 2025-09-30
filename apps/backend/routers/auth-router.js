@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ValidatorMiddleware } from "../middleware/validator-middleware.js";
 import { SignUpSchema, LogInSchema } from "../schemas/index.js";
-
+import { AuthController } from "../controllers/auth-controller.js";
 export const authRouter = Router();
 
 authRouter.get(

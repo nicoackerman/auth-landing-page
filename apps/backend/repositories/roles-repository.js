@@ -10,14 +10,16 @@ class _RolesRepository {
       "SELECT id, role FROM Roles WHERE role = ? LIMIT 1",
       [role]
     );
-    return data.length > 0 ? data[0] : null;
+    console.log(data);
+    return data.length > 0 ? data[0].id : null;
   }
   async getById(id) {
     const [data] = await this.connection.query(
       "SELECT id, role FROM Roles WHERE id = ? LIMIT 1",
       [id]
     );
-    return data.length > 0 ? data[0].id : null;
+    console.log(data)
+    return data.length > 0 ? data[0].role : null;
   }
 }
 
