@@ -1,10 +1,14 @@
 import helmet from "helmet";
 import express from "express";
+import cookieParser from "cookie-parser";
+
 import { authRouter } from "./routers/index.js";
 import { ErrorHandlerMiddleware } from "./middleware/error-handler-middleware.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 3100;
+
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
 
