@@ -7,30 +7,30 @@ export const authRouter = Router();
 authRouter.get(
   "/login",
   ValidatorMiddleware.validateSchema(LogInSchema, "body"),
-  (req, res) => {
-    AuthController.login(req, res);
+  (req, res, next) => {
+    AuthController.login(req, res, next);
   }
 );
 
 authRouter.get(
   "/signup",
   ValidatorMiddleware.validateSchema(SignUpSchema, "body"),
-  (req, res) => {
-    AuthController.signup(req, res);
+  (req, res, next) => {
+    AuthController.signup(req, res, next);
   }
 );
 
-authRouter.get("/refresh", (req, res) => {
+authRouter.get("/refresh", (req, res, next) => {
   try {
-    AuthController.verify(req, res);
+    AuthController.verify(req, res, next);
   } catch (e) {
     res.send("Unauthorized");
   }
 });
 
-authRouter.get("/verify", (req, res) => {
+authRouter.get("/verify", (req, res, next) => {
   try {
-    AuthController.verify(req, res);
+    AuthController.verify(req, res, next);
   } catch (e) {
     res.send("Unauthorized");
   }

@@ -5,10 +5,11 @@ import { JWTService } from "../services/jwt-service.js";
 import { RefreshTokensRepository } from "../repositories/refresh-tokens-repository.js";
 
 export class AuthController {
-  static async login(req, res) {
+  static async login(req, res, next) {
     const { email, password } = req.body;
+    
   }
-  static async signup(req, res) {
+  static async signup(req, res, next) {
     const { email, password, username } = req.body;
 
     const accessToken = await JWTService.generateJWT({ email });
@@ -48,7 +49,7 @@ export class AuthController {
       })
       .json({ rtid, accessToken, userId, email, username });
   }
-  static async verify(req, res) {
+  static async verify(req, res, next) {
     return true;
   }
 }
