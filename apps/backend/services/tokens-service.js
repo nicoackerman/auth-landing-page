@@ -3,15 +3,22 @@ import { HashingService } from "./hashing-service.js";
 
 export class TokensService {
   static async generateForAuth(username, userId, email) {
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7Days
+    const rtExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7Days
+    const atExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5Minutes
 
-    const accessToken = await JWTService.generateJWT({ email });
+    const accessToken = await JWTService.generateJWT({ email }, "5Minutes");
     const refreshToken = await JWTService.generateJWT(
       { username, userId, email },
       "7Days"
     );
-    
+
     const hashedRrefreshTk = await HashingService.hashString(refreshToken);
-    return { expiresAt, refreshToken, hashedRrefreshTk, accessToken };
+    return {
+      rtExpiresAt,
+      refreshToken,
+      hashedRrefreshTk,
+      accessToken,
+      atExpiresAt,
+    };
   }
 }

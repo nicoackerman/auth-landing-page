@@ -20,21 +20,32 @@ export class AuthController {
     if (!isUser) next(boom.unauthorized("Invalid email or password"));
 
     // User is valid. generate secure auth tokens
-    const { expiresAt, refreshToken, hashedRrefreshTk, accessToken } =
-      await TokensService.generateForAuth(username, userId, email);
+    const {
+      rtExpiresAt,
+      atExpiresAt,
+      refreshToken,
+      hashedRrefreshTk,
+      accessToken,
+    } = await TokensService.generateForAuth(username, userId, email);
 
     const rtid = await RefreshTokensRepository.insert(
       user.id,
       hashedRrefreshTk,
-      expiresAt
+      rtExpiresAt
     );
 
     res
       .cookie("refresh_token", refreshToken, {
-        maxAge: expiresAt,
+        maxAge: rtExpiresAt,
         httpOnly: true,
-        secure: true,
-        sameSite: "strict",
+        // secure: true,
+        // sameSite: "strict",
+      })
+      .cookie("access_token", accessToken, {
+        maxAge: atExpiresAt,
+        httpOnly: false,
+        // secure: true,
+        // sameSite: "strict",
       })
       .json({ accessToken, userId: user.id, email, username });
   }
@@ -60,21 +71,32 @@ export class AuthController {
 
     // Generates tokens
 
-    const { expiresAt, refreshToken, hashedRrefreshTk, accessToken } =
-      await TokensService.generateForAuth(username, userId, email);
+    const {
+      rtExpiresAt,
+      atExpiresAt,
+      refreshToken,
+      hashedRrefreshTk,
+      accessToken,
+    } = await TokensService.generateForAuth(username, userId, email);
 
     const rtid = await RefreshTokensRepository.insert(
       userId,
       hashedRrefreshTk,
-      expiresAt
+      rtExpiresAt
     );
 
     res
       .cookie("refresh_token", refreshToken, {
-        maxAge: expiresAt,
+        maxAge: rtExpiresAt,
         httpOnly: true,
-        secure: true,
-        sameSite: "strict",
+        // secure: true,
+        // sameSite: "strict",
+      })
+      .cookie("access_token", accessToken, {
+        maxAge: atExpiresAt,
+        httpOnly: false,
+        // secure: true,
+        // sameSite: "strict",
       })
       .json({ accessToken, userId, email, username });
   }
