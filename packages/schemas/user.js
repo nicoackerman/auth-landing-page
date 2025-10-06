@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-export const RoleEnum = z.enum(["client", "admin"]);
-
 export const UserSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   username: z
     .string()
     .min(3)
@@ -18,8 +16,12 @@ export const UserSchema = z.object({
       /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/,
       "Password must include lowercase, UPPERCASE, number, and symbol"
     ),
-  role: RoleEnum.default("client"),
+  role: z.enum(["client", "admin"]),
   createdAt: z.coerce.date(),
+});
+
+export const SessionSchema = UserSchema.omit({
+  password: true,
 });
 
 export const SignUpSchema = UserSchema.pick({
