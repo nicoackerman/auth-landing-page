@@ -20,10 +20,6 @@ export const UserSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
-export const SessionSchema = UserSchema.omit({
-  password: true,
-});
-
 export const SignUpSchema = UserSchema.pick({
   username: true,
   email: true,
