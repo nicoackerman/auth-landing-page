@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { ValidatorMiddleware } from "../middleware/validator-middleware.js";
-import { SignUpSchema, LogInSchema } from "../schemas/index.js";
+import { Guard } from "../middleware/guard.js";
+import { SignUpSchema, LogInSchema } from "../../../packages/schemas/user.js";
 import { AuthController } from "../controllers/auth-controller.js";
 export const authRouter = Router();
 
 authRouter.get(
   "/login",
-  ValidatorMiddleware.validateSchema(LogInSchema, "body"),
+  Guard.validateSchema(LogInSchema, "body"),
   (req, res, next) => {
     AuthController.login(req, res, next);
   }
@@ -14,24 +14,16 @@ authRouter.get(
 
 authRouter.get(
   "/signup",
-  ValidatorMiddleware.validateSchema(SignUpSchema, "body"),
+  Guard.validateSchema(SignUpSchema, "body"),
   (req, res, next) => {
     AuthController.signup(req, res, next);
   }
 );
 
-authRouter.get("/refresh", (req, res, next) => {
-  try {
-    AuthController.verify(req, res, next);
-  } catch (e) {
-    res.send("Unauthorized");
-  }
+authRouter.get("/refresh", Guard.validateRefreshToken(), (req, res, next) => {
+  AuthController.refresh(req, res, next);
 });
 
-authRouter.get("/verify", (req, res, next) => {
-  try {
-    AuthController.verify(req, res, next);
-  } catch (e) {
-    res.send("Unauthorized");
-  }
+authRouter.get("/me", Guard.validateAccessToken(), (req, res, next) => {
+  AuthController.refresh(req, res, next);
 });

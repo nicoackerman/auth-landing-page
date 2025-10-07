@@ -9,17 +9,26 @@ export class AuthController {
   static async login(req, res, next) {
     const { email, password } = req.body;
 
-    // User validation
     const user = await UsersRepository.getByEmail(email);
-    const { username, password: hashedPassword, id: userId } = user;
+
     if (!user) next(boom.unauthorized("Invalid email or password"));
+
+    const {
+      username,
+      password: hashedPassword,
+      id: userId,
+      role_id: roleId,
+    } = user;
+
+    const userRole = await RolesRepository.getById(roleId);
+
     const isUser = await HashingService.compareWithHash(
       password,
       hashedPassword
     );
+
     if (!isUser) next(boom.unauthorized("Invalid email or password"));
 
-    // User is valid. generate secure auth tokens
     const {
       rtExpiresAt,
       atExpiresAt,
@@ -47,12 +56,10 @@ export class AuthController {
         // secure: true,
         // sameSite: "strict",
       })
-      .json({ accessToken, userId: user.id, email, username });
+      .json({ id: user.id, email, username, role: userRole });
   }
   static async signup(req, res, next) {
     const { email, password, username } = req.body;
-
-    // creates user
 
     const hashedPassword = await HashingService.hashString(password);
 
@@ -68,8 +75,6 @@ export class AuthController {
       hashedPassword,
       clientRoleId
     );
-
-    // Generates tokens
 
     const {
       rtExpiresAt,
@@ -98,9 +103,44 @@ export class AuthController {
         // secure: true,
         // sameSite: "strict",
       })
-      .json({ accessToken, userId, email, username });
+      .json({ id: userId, email, username, role: "client" });
   }
-  static async verify(req, res, next) {
-    return true;
+  static async refresh(req, res, next) {
+    const decoded = jwt.decode(req.cookie.refresh_token);
+    const { username, userId, email } = decoded;
+    const {
+      rtExpiresAt,
+      atExpiresAt,
+      refreshToken,
+      hashedRrefreshTk,
+      accessToken,
+    } = await TokensService.generateForAuth(username, userId, email);
+
+    const isValid = await RefreshTokensRepository.isValid(
+      req.cookie.refresh_token
+    );
+    if (!isValid) {
+      next(boom.unauthorized(`Refresh Token is invalid`));
+    }
+
+    const rtid = await RefreshTokensRepository.insert(
+      userId,
+      hashedRrefreshTk,
+      rtExpiresAt
+    );
+    res
+      .cookie("refresh_token", refreshToken, {
+        maxAge: rtExpiresAt,
+        httpOnly: true,
+        // secure: true,
+        // sameSite: "strict",
+      })
+      .cookie("access_token", accessToken, {
+        maxAge: atExpiresAt,
+        httpOnly: false,
+        // secure: true,
+        // sameSite: "strict",
+      })
+      .json({ id: userId, email, username, role: "client" });
   }
 }

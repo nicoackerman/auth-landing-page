@@ -43,7 +43,7 @@ class _UsersRepository {
 
   async getByEmail(email) {
     const [data] = await this.connection.query(
-      "SELECT id, email, username password FROM Users WHERE email = ? LIMIT 1",
+      "SELECT id, email, username password, role_id FROM Users WHERE email = ? LIMIT 1",
       [email]
     );
     return data.length == 0 ? null : data[0];
