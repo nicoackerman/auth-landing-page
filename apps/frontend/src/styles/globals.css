@@ -34,3 +34,10 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out;
 }
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

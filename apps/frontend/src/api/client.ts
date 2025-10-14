@@ -1,10 +1,14 @@
 import type { User, UserEmail, Username, UserPassword } from "~/types/user";
 
+export const API_URL = process.env.API_URL || "http://localhost:3100";
 export class API {
   private originUrl: string;
 
-  constructor(originUrl: string) {
-    this.originUrl = originUrl;
+  constructor() {
+    if (!API_URL) {
+      throw new Error("Missing API_URL in your .env file");
+    }
+    this.originUrl = API_URL;
   }
 
   private async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {

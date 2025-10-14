@@ -2,6 +2,10 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import { APIClientProvider } from "~/providers/APIClientProvider";
+import Header from "~/components/ui/Header";
+import { AuthClientProvider } from "~/providers/authProvider";
+import { QueryProviderClient } from "~/providers/QueryProviderClient";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -19,7 +23,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body>{children}</body>
+      <body className="bg-gradient-to-br from-gray-900 to-black">
+        <QueryProviderClient>
+          <APIClientProvider>
+            <AuthClientProvider>
+              <Header />
+              {children}
+            </AuthClientProvider>
+          </APIClientProvider>
+        </QueryProviderClient>
+      </body>
     </html>
   );
 }
