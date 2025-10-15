@@ -1,13 +1,27 @@
 "use client";
 
+import { useActionState } from "react";
+import { submitSignUp } from "~/actions/submitSignUp";
+import type { SignUpActionResponse } from "~/types/actionsResponses";
+
+const initialState: SignUpActionResponse = {
+  success: false,
+  message: "",
+};
+
 export default function SignupPage() {
+  const [state, action, isPending] = useActionState(submitSignUp, initialState);
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen text-white">
-      <div className="w-full max-w-md p-8 space-y-8 rounded-lg shadow-lg animate-fade-in-down glassmorphism">
-        <h1 className="text-3xl font-bold text-center">Sign Up</h1>
-        <form className="space-y-6">
+    <main className="flex min-h-screen flex-col items-center justify-center text-white">
+      <div className="animate-fade-in-down glassmorphism w-full max-w-md space-y-8 rounded-lg p-8 shadow-lg">
+        <h1 className="text-center text-3xl font-bold">Sign up</h1>
+        <form action={action} autoComplete="on" className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-400">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-400"
+            >
               Username
             </label>
             <input
@@ -16,11 +30,24 @@ export default function SignupPage() {
               type="text"
               autoComplete="username"
               required
-              className="w-full px-3 py-2 mt-1 text-white bg-transparent border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-describedby="username-error"
+              className={
+                state?.errors?.username
+                  ? "border-red-500"
+                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              }
             />
+            {state?.errors?.username && (
+              <p id="username-error" className="text-sm text-red-500">
+                {state.errors.username[0]}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-400">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-400"
+            >
               Email
             </label>
             <input
@@ -29,48 +56,98 @@ export default function SignupPage() {
               type="email"
               autoComplete="email"
               required
-              className="w-full px-3 py-2 mt-1 text-white bg-transparent border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-describedby="email-error"
+              className={
+                state?.errors?.email
+                  ? "mt-1 w-full rounded-md border border-red-500 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              }
             />
+            {state?.errors?.email && (
+              <p id="email-error" className="text-sm text-red-500">
+                {state.errors.email[0]}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-400">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-400"
+            >
               Password
             </label>
             <input
               id="password"
               name="password"
               type="password"
-              autoComplete="new-password"
+              autoComplete="password"
               required
-              className="w-full px-3 py-2 mt-1 text-white bg-transparent border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-describedby="password-error"
+              className={
+                state?.errors?.password
+                  ? "mt-1 w-full rounded-md border border-red-500 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              }
             />
+            {state?.errors?.password && (
+              <p id="password-error" className="text-sm text-red-500">
+                {state.errors.password[0]}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="confirm-password"className="block text-sm font-medium text-gray-400">
-              Confirm Password
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-400"
+            >
+              Password
             </label>
             <input
-              id="confirm-password"
-              name="confirm-password"
+              id="confirmPassword"
+              name="confirmPassword"
               type="password"
-              autoComplete="new-password"
+              autoComplete="confirmPassword"
               required
-              className="w-full px-3 py-2 mt-1 text-white bg-transparent border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-describedby="confirmPassword-error"
+              className={
+                state?.errors?.confirmPassword
+                  ? "mt-1 w-full rounded-md border border-red-500 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              }
             />
+            {state?.errors?.confirmPassword && (
+              <p id="confirmPassword-error" className="text-sm text-red-500">
+                {state.errors.confirmPassword[0]}
+              </p>
+            )}
+          </div>
+          <div>
+            {state?.message && (
+              <div>
+                <div>{state.success ? "Success" : "Error"}</div>
+                <div>{state.message}</div>
+              </div>
+            )}
           </div>
           <div>
             <button
+              disabled={isPending}
               type="submit"
-              className="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transform hover:scale-105 transition-transform"
+              className={
+                "mt-1 w-full cursor-pointer rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              }
             >
-              Sign Up
+              {isPending ? "Saving..." : "Login"}
             </button>
           </div>
         </form>
-        <p className="text-sm text-center text-gray-400">
-          Already have an account?{' '}
-          <a href="/login" className="font-medium text-blue-500 hover:underline">
-            Log in
+        <p className="text-center text-sm text-gray-400">
+          Don't have an account?{" "}
+          <a
+            href="/signup"
+            className="font-medium text-blue-500 hover:underline"
+          >
+            Sign up
           </a>
         </p>
       </div>
