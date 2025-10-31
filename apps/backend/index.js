@@ -3,7 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 
 import { authRouter } from "./routers/index.js";
-import { ErrorHandlerMiddleware } from "./middleware/error-handler-middleware.js";
+import { ErrorHandlerMiddleware } from "./middleware/error-handler.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 3100;
@@ -21,6 +21,7 @@ app.use(ErrorHandlerMiddleware.globalHandler);
 app.use((req, res) => {
   res.status(404).send("<h1>404 Not Found</h1>");
 });
+
 app.listen(PORT, () => {
   console.log(`server listening on port http://localhost:${PORT}`);
 });

@@ -22,3 +22,8 @@ CREATE TABLE Refresh_tokens (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
+
+INSERT INTO Roles (role)
+VALUES ('admin');
+INSERT INTO Roles (role)
+VALUES ('client'); 

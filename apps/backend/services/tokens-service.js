@@ -12,11 +12,18 @@ export class TokensService {
       "7Days"
     );
 
-    const hashedRrefreshTk = await HashingService.hashString(refreshToken);
+    const hashedRefreshTk = await HashingService.hashString(refreshToken);
+    console.log("dd", {
+      rtExpiresAt,
+      refreshToken,
+      hashedRefreshTk,
+      accessToken,
+      atExpiresAt,
+    });
     return {
       rtExpiresAt,
       refreshToken,
-      hashedRrefreshTk,
+      hashedRefreshTk,
       accessToken,
       atExpiresAt,
     };

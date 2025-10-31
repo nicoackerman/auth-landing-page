@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { Guard } from "../middleware/guard.js";
-import { SignUpSchema, LogInSchema } from "../../../packages/schemas/user.js";
+import { SignUpSchema, LogInSchema } from "../schemas/user.js";
 import { AuthController } from "../controllers/auth-controller.js";
 export const authRouter = Router();
 
-authRouter.get(
+authRouter.post(
   "/login",
   Guard.validateSchema(LogInSchema, "body"),
   (req, res, next) => {
@@ -12,7 +12,7 @@ authRouter.get(
   }
 );
 
-authRouter.get(
+authRouter.post(
   "/signup",
   Guard.validateSchema(SignUpSchema, "body"),
   (req, res, next) => {

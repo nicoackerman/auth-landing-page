@@ -10,7 +10,6 @@ class _RolesRepository {
       "SELECT id, role FROM Roles WHERE role = ? LIMIT 1",
       [role]
     );
-    console.log(data);
     return data.length > 0 ? data[0].id : null;
   }
   async getById(id) {
@@ -18,7 +17,6 @@ class _RolesRepository {
       "SELECT id, role FROM Roles WHERE id = ? LIMIT 1",
       [id]
     );
-    console.log(data)
     return data.length > 0 ? data[0].role : null;
   }
 }
