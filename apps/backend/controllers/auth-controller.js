@@ -9,13 +9,16 @@ import { safeExec } from "../utils/tryCatch.js";
 export class AuthController {
   static async login(req, res, next) {
     const { email, password } = req.body;
-
-    // Verifies if user is in db
+    console.log("req");
+    // Verify if user exists in DB
     const { data: user, error: userError } = await safeExec(
       UsersRepository.getByEmail(email),
-      next(boom.unauthorized("Invalid email or password"))
+      boom.unauthorized("Invalid email or password")
     );
-    if (user) return next(userError);
+    if (userError || !user) {
+      return next(userError);
+    }
+    console.log(user);
 
     const {
       username,
@@ -24,28 +27,31 @@ export class AuthController {
       role_id: roleId,
     } = user;
 
-    // Gets the user's role
+    // Get the user's role
     const { data: userRole, error: userRoleError } = await safeExec(
       RolesRepository.getById(roleId),
-      next(boom.unauthorized("Invalid email or password"))
+      boom.internal("Error while getting user's role")
     );
-    if (userRole) return next(userRoleError);
+    if (userRoleError || !userRole) {
+      return next(userRoleError);
+    }
 
-    // Verifies auth credentials (password)
+    // Verify password
     const { data: isUser, error: isUserError } = await safeExec(
-      HashingService.compareWithHash(password, hashedPassword),
-      next(boom.unauthorized("Invalid email or password"))
+      HashingService.compareWithHash(password, hashedPassword)
     );
+    if (isUserError || !isUser) {
+      return next(boom.unauthorized("Invalid email or password"));
+    }
 
-    if (isUser == null) return next(isUserError);
-    if (!isUser) return next(boom.unauthorized("Invalid email or password"));
-
-    // Generates auth tokens
+    // Generate authentication tokens
     const { data: tokensData, error: tokensError } = await safeExec(
       TokensService.generateForAuth(username, userId, email),
-      next(boom.internal("Invalid email or password"))
+      boom.internal("Failed to generate authentication tokens")
     );
-    if (tokensError) return next(boom.internal("Invalid email or password"));
+    if (tokensError || !tokensData) {
+      return next(tokensError);
+    }
 
     const {
       rtExpiresAt,
@@ -55,12 +61,14 @@ export class AuthController {
       accessToken,
     } = tokensData;
 
-    // Updates auth tokens registered in db
+    // Save refresh token in DB
     const { data: rtid, error: rtidError } = await safeExec(
       RefreshTokensRepository.insert(user.id, hashedRefreshTk, rtExpiresAt),
-      next(boom.internal("Invalid email or password"))
+      boom.internal("Failed to save refresh token")
     );
-    if (tokensError) return next(boom.internal("Invalid email or password"));
+    if (rtidError || !rtid) {
+      return next(rtidError);
+    }
 
     res
       .cookie("refresh_token", refreshToken, {
@@ -91,21 +99,27 @@ export class AuthController {
       HashingService.hashString(password),
       boom.badRequest("Error hashing password")
     );
-    if (hashError) return next(hashError);
+    if (hashError || !hashedPassword) {
+      return next(hashError);
+    }
 
     // Gets the corresponding id for client user's
     const { data: clientRoleId, error: roleError } = await safeExec(
       RolesRepository.getByName("client"),
       boom.internal("Error retrieving client role")
     );
-    if (roleError) return next(roleError);
+    if (roleError) {
+      return next(roleError);
+    }
 
     // Adds the user to db
     const { data: userId, error: createError } = await safeExec(
       UsersRepository.create(username, email, hashedPassword, clientRoleId),
       boom.internal("Error creating user")
     );
-    if (createError) return next(createError);
+    if (createError) {
+      return next(createError);
+    }
 
     // Generates auth tokens (for client verification)
     const { data: tokensData, error: tokenError } = await safeExec(
@@ -113,7 +127,9 @@ export class AuthController {
       boom.internal("Error generating tokens"),
       [() => UsersRepository.delete(userId)]
     );
-    if (tokenError) return next(tokenError);
+    if (tokenError) {
+      return next(tokenError);
+    }
 
     // Updates auth tokens registered in db
     const { error: rtidError } = await safeExec(
@@ -125,7 +141,9 @@ export class AuthController {
       boom.internal("Error saving refresh token"),
       [() => UsersRepository.delete(userId)]
     );
-    if (rtidError) return next(rtidError);
+    if (rtidError) {
+      return next(rtidError);
+    }
 
     res
       .cookie("refresh_token", tokensData.refreshToken, {

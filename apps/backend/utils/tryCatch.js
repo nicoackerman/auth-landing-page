@@ -17,15 +17,16 @@ export async function safeExec(
   rollback = []
 ) {
   const { data, error } = await tryCatchAsync(promise);
-
+  console.log(data, error);
   if (error) {
     for (const action of rollback) {
       await tryCatchAsync(action());
     }
+    console.log(data, error);
 
     return { data: null, error: error.isBoom ? error : boomError };
   }
-
+  console.log(data, error);
   return { data, error: null };
 }
 
