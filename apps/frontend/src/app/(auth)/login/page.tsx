@@ -1,93 +1,60 @@
 "use client";
-
-import { useActionState } from "react";
-import { submitLogin } from "~/actions/submitLogin";
-import type { LoginActionResponse } from "~/types/actionsResponses";
-
-const initialState: LoginActionResponse = {
-  success: false,
-  message: "",
-};
+import { useLoginForm } from "~/hooks/useLoginForm";
 
 export default function LoginPage() {
-  const [state, action, isPending] = useActionState(submitLogin, initialState);
+  const {
+    result,
+    register,
+    handleSubmit,
+    onSubmit,
+    setError,
+    errors,
+    isSubmitting,
+  } = useLoginForm();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-white">
       <div className="animate-fade-in-down glassmorphism w-full max-w-md space-y-8 rounded-lg p-8 shadow-lg">
         <h1 className="text-center text-3xl font-bold">Log In</h1>
-        <form action={action} autoComplete="on" className="space-y-6">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-400"
-            >
-              Username
-            </label>
             <input
-              id="username"
-              name="username"
+              {...register("email")}
               type="text"
-              autoComplete="username"
-              required
-              aria-describedby="username-error"
-              className={
-                state?.errors?.username
-                  ? "border-red-500"
-                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              }
+              placeholder="Email"
+              className="w-full rounded-md bg-transparent p-2 text-white placeholder:text-gray-400"
             />
-            {state?.errors?.username && (
-              <p id="username-error" className="text-sm text-red-500">
-                {state.errors.username[0]}
-              </p>
+            {errors.email && (
+              <div className="mt-1 text-red-500">{errors.email.message}</div>
             )}
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-400"
-            >
-              Password
-            </label>
             <input
-              id="password"
-              name="password"
+              {...register("password")}
               type="password"
-              autoComplete="password"
-              required
-              aria-describedby="password-error"
-              className={
-                state?.errors?.password
-                  ? "mt-1 w-full rounded-md border border-red-500 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  : "mt-1 w-full rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              }
+              placeholder="Password"
+              className="w-full rounded-md bg-transparent p-2 text-white placeholder:text-gray-400"
             />
-            {state?.errors?.password && (
-              <p id="password-error" className="text-sm text-red-500">
-                {state.errors.password[0]}
-              </p>
+            {errors.password && (
+              <div className="mt-1 text-red-500">{errors.password.message}</div>
             )}
           </div>
-          <div>
-            {state?.message && (
-              <div>
-                <div>{state.success ? "Success" : "Error"}</div>
-                <div>{state.message}</div>
-              </div>
-            )}
-          </div>
-          <div>
-            <button
-              disabled={isPending}
-              type="submit"
-              className={
-                "mt-1 w-full cursor-pointer rounded-md border border-gray-700 bg-transparent px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              }
-            >
-              {isPending ? "Saving..." : "Login"}
-            </button>
-          </div>
+          <button
+            disabled={isSubmitting}
+            type="submit"
+            className="rounded-md bg-blue-500 p-2 text-white transition-colors hover:bg-blue-600 disabled:bg-gray-500"
+          >
+            {isSubmitting ? "Loading..." : "Submit"}
+          </button>
+          {errors.root && (
+            <div className="text-red-500">{errors.root.message}</div>
+          )}
+          {result && result.success && (
+            <div className="text-blue-500">{result.message}</div>
+          )}
+          {result && !result.success && (
+            <div className="text-red-500">{result.message}</div>
+          )}
         </form>
         <p className="text-center text-sm text-gray-400">
           Don't have an account?{" "}

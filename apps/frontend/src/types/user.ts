@@ -64,6 +64,7 @@ export type User = {
 };
 
 export type Username = User["username"];
+export type UserId = User["id"];
 export type UserEmail = User["email"];
 export type UserPassword = User["password"];
 export type UserRole = User["role"];

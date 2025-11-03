@@ -1,4 +1,12 @@
 import { NextResponse } from "next/server";
+import type { UserEmail, UserId, Username, UserRole } from "~/types/user";
+
+export type ResData = {
+  id: UserId;
+  email: UserEmail;
+  username: Username;
+  role: UserRole;
+};
 
 export async function POST(req: Request) {
   const body = await req.json();

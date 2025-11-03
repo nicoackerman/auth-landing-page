@@ -15,25 +15,25 @@ export function AuthClientProvider({
   const [_user, setUser] = useState(null);
   const [_loading, setLoading] = useState(true);
 
-  const { api } = useAPI();
+  // const { api } = useAPI();
 
   const accessToken = getCookie("access_token");
   const refreshToken = getCookie("refresh_token");
 
-  const { data, isLoading } = useQuery({
-    queryFn: () => api.refreshSession(),
-    queryKey: ["user_session"],
-    enabled: Boolean(
-      (refreshToken && accessToken) || (refreshToken && !accessToken),
-    ),
-  });
+  // const { data, isLoading } = useQuery({
+  //   queryFn: () => api.refreshSession(),
+  //   queryKey: ["user_session"],
+  //   enabled: Boolean(
+  //     (refreshToken && accessToken) || (refreshToken && !accessToken),
+  //   ),
+  // });
 
-  useEffect(() => {
-    if (!isLoading) {
-      setUser(data ?? null);
-      setLoading(false);
-    }
-  }, [data, isLoading]);
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     setUser(data ?? null);
+  //     setLoading(false);
+  //   }
+  // }, [data, isLoading]);
 
   return (
     <AuthContext.Provider value={{ user: _user, isLoading: _loading }}>

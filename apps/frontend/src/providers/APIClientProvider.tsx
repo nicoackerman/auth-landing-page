@@ -1,5 +1,5 @@
 "use client";
-import { API } from "../api/client";
+import { API } from "../apiClient/client";
 import { createContext, useContext, useState } from "react";
 
 interface APIContextValue {

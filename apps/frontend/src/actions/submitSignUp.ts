@@ -1,8 +1,9 @@
 "use server";
 
+import { API } from "~/apiClient/client";
 import type { SignUpActionResponse } from "~/types/actionsResponses";
 import { SignUpSchema } from "~/types/user";
-import { tryCatchSync } from "~/utils/tryCatch";
+import { tryCatchAsync, tryCatchSync } from "~/utils/tryCatch";
 
 export async function submitSignUp(
   prevState: SignUpActionResponse | null,
@@ -35,6 +36,22 @@ export async function submitSignUp(
       errors: validatedData.error.flatten().fieldErrors,
     };
   }
+
+  const safeData = validatedData.data;
+
+  const { data: apiData, error: apiError } = await tryCatchAsync(
+    API.signup(safeData.username, safeData.email, safeData.password),
+  );
+
+  if (apiError) {
+    console.log(apiError);
+    return {
+      success: false,
+      message: "An unexpected api error occurred",
+    };
+  }
+
+  console.log(apiData);
 
   return {
     success: true,
