@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import type { ResData } from "~/app/api/auth/login/route";
-import type { BoomError } from "~/types/api";
-import { LogInSchema } from "~/types/user";
+import type { BoomError } from "~/entities/errors/api";
+import { LogInSchema } from "~/entities/models/user";
 import { tryCatchAsync } from "~/utils/tryCatch";
 
 interface FormResult {

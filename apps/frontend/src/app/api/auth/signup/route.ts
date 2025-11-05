@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import type { UserEmail, UserId, Username, UserRole } from "~/types/user";
+import type {
+  UserEmail,
+  UserId,
+  Username,
+  UserRole,
+} from "~/entities/models/user";
 
 export type ResData = {
   id: UserId;
