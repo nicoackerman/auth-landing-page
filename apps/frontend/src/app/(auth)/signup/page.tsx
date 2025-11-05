@@ -1,6 +1,6 @@
 "use client";
 
-import { useSignUpForm } from "~/hooks/useSignUpForm";
+import { useSignUpForm } from "~/app/(auth)/_hooks/useSignUpForm";
 
 export default function SignUpPage() {
   const { result, register, handleSubmit, onSubmit, errors, isSubmitting } =

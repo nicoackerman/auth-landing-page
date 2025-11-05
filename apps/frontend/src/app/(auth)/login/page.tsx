@@ -1,5 +1,5 @@
 "use client";
-import { useLoginForm } from "~/hooks/useLoginForm";
+import { useLoginForm } from "~/app/(auth)/_hooks/useLoginForm";
 
 export default function LoginPage() {
   const { result, register, handleSubmit, onSubmit, errors, isSubmitting } =
