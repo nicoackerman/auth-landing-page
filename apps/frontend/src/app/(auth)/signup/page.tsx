@@ -3,15 +3,8 @@
 import { useSignUpForm } from "~/hooks/useSignUpForm";
 
 export default function SignUpPage() {
-  const {
-    result,
-    register,
-    handleSubmit,
-    onSubmit,
-    setError,
-    errors,
-    isSubmitting,
-  } = useSignUpForm();
+  const { result, register, handleSubmit, onSubmit, errors, isSubmitting } =
+    useSignUpForm();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-white">
@@ -82,12 +75,12 @@ export default function SignUpPage() {
           )}
         </form>
         <p className="text-center text-sm text-gray-400">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <a
-            href="/signup"
+            href="/login"
             className="font-medium text-blue-500 hover:underline"
           >
-            Sign up
+            Log in
           </a>
         </p>
       </div>

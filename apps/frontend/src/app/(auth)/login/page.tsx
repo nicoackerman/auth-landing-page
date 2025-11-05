@@ -2,15 +2,8 @@
 import { useLoginForm } from "~/hooks/useLoginForm";
 
 export default function LoginPage() {
-  const {
-    result,
-    register,
-    handleSubmit,
-    onSubmit,
-    setError,
-    errors,
-    isSubmitting,
-  } = useLoginForm();
+  const { result, register, handleSubmit, onSubmit, errors, isSubmitting } =
+    useLoginForm();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-white">
@@ -57,7 +50,7 @@ export default function LoginPage() {
           )}
         </form>
         <p className="text-center text-sm text-gray-400">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a
             href="/signup"
             className="font-medium text-blue-500 hover:underline"
