@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import type {
-  UserEmail,
-  UserId,
-  Username,
-  UserRole,
-} from "~/entities/models/user";
+import type { User } from "~/interface-adapters/dtos/user.dto";
 
 export type ResData = {
-  id: UserId;
-  email: UserEmail;
-  username: Username;
-  role: UserRole;
+  id: User["id"];
+  email: User["email"];
+  username: User["username"];
+  role: User["role"];
 };
 
 export async function POST(req: Request) {
@@ -23,7 +18,7 @@ export async function POST(req: Request) {
     credentials: "include",
   });
 
-  const data = await res.json();
+  const data: ResData = await res.json();
   const response = NextResponse.json(data, { status: res.status });
 
   const setCookie = res.headers.get("set-cookie");

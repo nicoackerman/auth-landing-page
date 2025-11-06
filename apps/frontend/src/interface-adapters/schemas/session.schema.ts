@@ -5,5 +5,3 @@ export const sessionSchema = z.object({
   userId: z.string(),
   expiresAt: z.date(),
 });
-
-export type Session = z.infer<typeof sessionSchema>;
