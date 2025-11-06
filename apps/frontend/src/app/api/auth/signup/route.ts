@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SignUpInput } from "~/interface-adapters/dtos/signup-input.dto.ts";
 import type { User } from "~/interface-adapters/dtos/user.dto";
 
 export type ResData = {
@@ -9,7 +10,7 @@ export type ResData = {
 };
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const body: SignUpInput = await req.json();
 
   const res = await fetch(`${process.env.API_URL}/auth/signup`, {
     method: "POST",

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { LoginInput } from "~/interface-adapters/dtos/login-input.dto";
 
 import type { User } from "~/interface-adapters/dtos/user.dto";
 
@@ -10,7 +11,7 @@ export type ResData = {
 };
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const body: LoginInput = await req.json();
 
   const res = await fetch(`${process.env.API_URL}/auth/login`, {
     method: "POST",

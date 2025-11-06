@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import type { ResData } from "~/app/api/auth/login/route";
-import type { BoomError } from "~/entities/errors/api";
-import { LogInSchema } from "~/interface-adapters/schemas/login.schema";
 import { tryCatchAsync } from "~/utils/tryCatch";
+import { LogInSchema } from "~/interface-adapters/schemas/login.schema";
+
+import type { ResData } from "~/app/api/auth/login/route";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import type { BoomError } from "~/entities/errors/api";
 
 interface FormResult {
   success: boolean;
