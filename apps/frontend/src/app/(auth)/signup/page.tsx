@@ -1,10 +1,25 @@
 "use client";
 
 import { useSignUpForm } from "~/app/(auth)/_hooks/useSignUpForm";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const { result, register, handleSubmit, onSubmit, errors, isSubmitting } =
     useSignUpForm();
+
+  useEffect(() => {
+    if (!result?.success) return;
+
+    const timer = setTimeout(() => {
+      router.replace("/dashboard");
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [result, router]);
+
+  const authenticated = result?.success;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-white">
@@ -58,11 +73,11 @@ export default function SignUpPage() {
             )}
           </div>
           <button
-            disabled={isSubmitting}
+            disabled={isSubmitting || authenticated}
             type="submit"
             className="rounded-md bg-blue-500 p-2 text-white transition-colors hover:bg-blue-600 disabled:bg-gray-500"
           >
-            {isSubmitting ? "Loading..." : "Submit"}
+            {isSubmitting || authenticated ? "Loading..." : "Submit"}
           </button>
           {errors.root && (
             <div className="text-red-500">{errors.root.message}</div>

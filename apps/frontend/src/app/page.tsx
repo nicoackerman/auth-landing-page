@@ -17,10 +17,8 @@ export default function HomePage() {
             Sign Up
           </button>
         </Link>
-        <Link href="/signup">
-          <button>
-            Log In
-          </button>
+        <Link href="/login">
+          <button>Log In</button>
         </Link>
       </div>
       <footer className="absolute bottom-4 text-center text-sm text-gray-500">

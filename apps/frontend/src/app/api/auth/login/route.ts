@@ -11,7 +11,7 @@ export type ResData = {
 };
 
 export async function POST(req: Request) {
-  const body: LoginInput = await req.json();
+  const body = (await req.json()) as LoginInput;
 
   const res = await fetch(`${process.env.API_URL}/auth/login`, {
     method: "POST",
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     credentials: "include",
   });
 
-  const data: ResData = await res.json();
+  const data = (await res.json()) as ResData;
   const response = NextResponse.json(data, { status: res.status });
 
   const setCookie = res.headers.get("set-cookie");
